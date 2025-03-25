@@ -7,18 +7,27 @@ import os
 from glob import glob
 
 class BillEmbedder:
-    def __init__(self):
+    def __init__(self, qdrant_url=None, qdrant_api_key=None):
         # Initialize the embedding model
         self.embedder = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
         
-        # Initialize in-memory Qdrant instance
-        self.qdrant = QdrantClient(":memory:")
+        # Initialize Qdrant - either cloud or in-memory
+        if qdrant_url and qdrant_api_key:
+            # Use cloud Qdrant instance
+            self.qdrant = QdrantClient(
+                url=qdrant_url,
+                api_key=qdrant_api_key
+            )
+            print(f"Connected to Qdrant cloud at {qdrant_url}")
+        else:
+            # Fall back to in-memory for development
+            self.qdrant = QdrantClient(":memory:")
+            print("Using in-memory Qdrant instance (not persistent)")
         
-        # Create a collection for bill chunks
+        # Create collection for bill chunks if it doesn't exist
         self.vector_size = self.embedder.get_sentence_embedding_dimension()
         collection_name = "bill_chunks"
         
-        # Check if collection exists, if not create it (fixing deprecation warning)
         if not self.qdrant.collection_exists(collection_name):
             self.qdrant.create_collection(
                 collection_name=collection_name,
