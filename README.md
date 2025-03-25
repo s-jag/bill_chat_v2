@@ -1,7 +1,7 @@
 # bill_chat_v2
 
 # Engineering Guide: Implementing a RAG-Powered Chat System for Congressional Bills 
-We build a Retrieval-Augmented Generation backend step-by-step, inspired by ZeroEntropy’s architecture, but tailored to a specific use case and using mostly open-source components. Our goal is a system that can answer questions about **U.S. congressional bills**, with the data stored in Firebase. This system will serve a chat interface where users select a bill and ask questions about its contents. We’ll cover everything from data ingestion (getting bill text and chunking it) to setting up a vector database for retrieval, to integrating with an LLM to generate answers. 
+We build a Retrieval-Augmented Generation backend step-by-step. Our goal is a system that can answer questions about **U.S. congressional bills**, with the data stored in Firebase. This system will serve a chat interface where users select a bill and ask questions about its contents. We’ll cover everything from data ingestion (getting bill text and chunking it) to setting up a vector database for retrieval, to integrating with an LLM to generate answers. 
 
 For context, congressional bills are typically long documents with formal structure (sections, subsections, etc.), somewhat akin to legal text. Users might ask things like “What does Section 5 of this bill say?” or “Does this bill mention solar energy tax credits?”. We want our system to retrieve the relevant sections of the bill and provide them to the language model to answer the user’s question accurately.
 
@@ -14,7 +14,7 @@ We’ll assume we have access to OpenAI or Anthropic’s API for the language mo
 4. **Backend Query Endpoint** – writing the logic to accept a user query + bill ID, perform retrieval (with potential filtering), and call the LLM to produce an answer.
 5. **Prompt Design for QA** – constructing the prompt that feeds retrieved text to the LLM effectively (including examples of system instructions and user prompts).
 6. **Integration and Testing** – how to wrap this into an API (e.g., a Flask app or Firebase Cloud Function) and test it with example questions.
-7. **Foresight** – considerations for improvement, scaling, and ensuring accuracy (tying back to ZeroEntropy-like eval).
+7. **Foresight** – considerations for improvement, scaling, and ensuring accuracy.
 
 Throughout, we’ll use inline code and comments to clarify each step. Let’s get started.
 
@@ -64,7 +64,7 @@ This just cleans up blank lines.
 Now we have the text ready for chunking.
 
 ## 2. Document Chunking 
-Following ZeroEntropy’s lead, we want to chunk each bill into semantically coherent pieces. Congressional bills have a hierarchical structure typically:
+We want to chunk each bill into semantically coherent pieces. Congressional bills have a hierarchical structure typically:
 - They often start with a title, then sections labeled “Section 1, Section 2, ...” or “SEC. 1. ...”.
 - Sections can have subsections labeled (a), (b), etc., and further subclauses (i), (ii), etc.
 
@@ -417,7 +417,7 @@ Example queries:
 
 By ensuring our retrieval is strong (thanks to chunking and filtering) and our prompt restricts to given text, we’ll likely get accurate answers for these.
 
-This step-by-step guide mirrors ZeroEntropy’s pipeline: 
+Pipeline: 
 1. ingest (we did via Firebase),
 2. chunk (we used GPT-4, analogous to LlamaChunk),
 3. embed + store (we used a vector model and Qdrant),
@@ -431,7 +431,7 @@ This step-by-step guide mirrors ZeroEntropy’s pipeline:
 
 Our approach already avoids proprietary stuff except OpenAI for chunk & answer. If those are allowed (the user said they’d provide API for OpenAI/Anthropic), that’s fine. If not, one could substitute with local model calls (perhaps using HuggingFace transformers pipeline for a chat model). The output might not be as polished, though.
 
-**Wrap-Up:** We should consider evaluating this system. We don’t have a LegalBench for bills, but we could craft a few Q&A pairs ourselves to test. For example, parse the bill manually for key facts and test queries on them. This is similar to how ZeroEntropy used LegalBench-RAG. If a discrepancy is found, we could refine:
+**Wrap-Up:** We should consider evaluating this system. We don’t have a LegalBench for bills, but we could craft a few Q&A pairs ourselves to test. For example, parse the bill manually for key facts and test queries on them. If a discrepancy is found, we could refine:
 - If a certain answer isn’t found due to chunking, perhaps refine chunk length.
 - If the LLM gives an incorrect answer despite having the snippet (rare if prompt is good), maybe emphasize quoting the text.
 
@@ -447,5 +447,3 @@ Thus, we have an end-to-end blueprint:
 5. **LLM query answering with provided context** (with careful prompt to ensure fidelity).
 
 This setup, inspired by ZeroEntropy’s methods, can significantly improve accuracy of answers in our congressional bill chatbot. The system will quote the bill’s text for answers, making the responses transparent and trustworthy, which is crucial for users (e.g., policy analysts, lawyers, or citizens reading bills).
-
-In the next section, we’ll discuss some **business foresight and strategic considerations** for ZeroEntropy itself – how can they improve further, and how do they stand relative to other solutions like Contextual AI or LangChain, to put our work in context.
