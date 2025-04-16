@@ -13,7 +13,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Initialize clients
-openai_client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+openai_client = OpenAI(api_key=os.getenv('OPENAI_API_KEY', "default"))
 embedder = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
 qdrant = QdrantClient(
     url=os.getenv('QDRANT_URL'),
