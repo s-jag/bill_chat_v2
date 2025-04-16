@@ -38,6 +38,8 @@ wheels/
 *.swo
 .DS_Store
 
-# Project specific
-data/chunks/*
-!data/chunks/README.md 
+poli-ddedb-firebase-adminsdk-ch6ct-3b65358a27.json
+
+# # Project specific
+# data/chunks/*
+# !data/chunks/README.md 

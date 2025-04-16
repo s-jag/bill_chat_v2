@@ -1,0 +1,20 @@
+{
+  "bill_id": "hr-3334-118",
+  "num_chunks": 14,
+  "chunk_files": [
+    "hr-3334-118_chunk_000.txt",
+    "hr-3334-118_chunk_001.txt",
+    "hr-3334-118_chunk_002.txt",
+    "hr-3334-118_chunk_003.txt",
+    "hr-3334-118_chunk_004.txt",
+    "hr-3334-118_chunk_005.txt",
+    "hr-3334-118_chunk_006.txt",
+    "hr-3334-118_chunk_007.txt",
+    "hr-3334-118_chunk_008.txt",
+    "hr-3334-118_chunk_009.txt",
+    "hr-3334-118_chunk_010.txt",
+    "hr-3334-118_chunk_011.txt",
+    "hr-3334-118_chunk_012.txt",
+    "hr-3334-118_chunk_013.txt"
+  ]
+}
